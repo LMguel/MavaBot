@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+*.db
+*.sqlite3
+*.log
+.env
+.env.*
+.vscode/
+venv/
+.venv/
+.streamlit/
+.idea/
+.DS_Store
+*.pem
+winthor_fake.db
