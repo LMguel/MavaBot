@@ -1,59 +1,86 @@
-# modules/ia.py
-import streamlit as st
+﻿# modules/ia.py
+import html
 import traceback
-from mavai_core import responder, limpar_historico
+
+import streamlit as st
+from langchain_core.messages import HumanMessage, SystemMessage
+
+from mavai_core import responder
+from modules.intent import detectar_intencao
 
 USER_ID = "streamlit"  # id fixo para sessão do Streamlit
 
-def render(db, chain, llm_conversa):
 
-    st.title("💬 Assistente IA")
-    st.caption("Faça perguntas sobre vendas, clientes e estoque.")
-    st.markdown("<div style='height: 2rem;'></div>", unsafe_allow_html=True)
+def _render_message(role: str, content: str) -> None:
+    css_role = "user" if role == "user" else "assistant"
+    safe_content = html.escape(content).replace("\n", "<br>")
+    st.markdown(
+        (
+            f'<div class="mav-chat-row {css_role}">'
+            f'<div class="mav-chat-bubble {css_role}">{safe_content}</div>'
+            "</div>"
+        ),
+        unsafe_allow_html=True,
+    )
 
-    # Inicializa histórico da UI
+
+def render(db, chain, llm_conversa, llm_intent):
+    st.title("Assistente IA")
+    st.caption("Faça perguntas sobre vendas, clientes e estoque da MAVA.")
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
+
+    bem_vindo = (
+        "Oi! Eu sou o MavBot da Mava Distribuidora.\n\n"
+        "Posso te ajudar com preços, estoque e pedidos."
+    )
+
     if "mensagens" not in st.session_state:
-        st.session_state.mensagens = [{
-            "role": "assistant",
-            "content": "Olá! Sou a **MavAI**. Em que posso ajudar hoje? Posso analisar vendas, estoque ou clientes para você."
-        }]
+        st.session_state.mensagens = [{"role": "assistant", "content": bem_vindo}]
 
-    # Renderiza histórico de mensagens
     for msg in st.session_state.mensagens:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+        _render_message(msg["role"], msg["content"])
 
-    # Input do usuário
     if pergunta := st.chat_input("Digite sua pergunta sobre a MAVA..."):
-
         st.session_state.mensagens.append({"role": "user", "content": pergunta})
 
-        with st.spinner("MavAI está pensando..."):
+        with st.spinner("MavBot esta pensando..."):
             try:
-                resposta_final = responder(
-                    user_id=USER_ID,
-                    pergunta=pergunta,
-                    db=db,
-                    chain=chain,
-                    llm_conversa=llm_conversa,
+                intencao = detectar_intencao(pergunta)
+
+                if intencao == "saudacao":
+                    resposta_final = (
+                        "Oi! Eu sou o MavBot da Mava Distribuidora. "
+                        "Posso consultar precos, estoque e pedidos pra voce. Em que posso ajudar?"
+                    )
+                elif intencao == "consulta":
+                    resposta_final = responder(
+                        user_id=USER_ID,
+                        pergunta=pergunta,
+                        db=db,
+                        chain=chain,
+                        llm_conversa=llm_conversa,
+                        llm_intent=llm_intent,
+                    )
+                else:
+                    resposta_llm = llm_conversa.invoke([
+                        SystemMessage(
+                            content="Voce e um assistente de vendas simpatico e direto da Mava Distribuidora."
+                        ),
+                        HumanMessage(content=pergunta),
+                    ])
+                    resposta_final = resposta_llm.content
+
+                st.session_state.mensagens.append(
+                    {"role": "assistant", "content": resposta_final}
                 )
-                st.session_state.mensagens.append({"role": "assistant", "content": resposta_final})
 
             except Exception as e:
                 traceback.print_exc()
-                st.session_state.mensagens.append({
-                    "role": "assistant",
-                    "content": f"⚠️ Erro na análise: {str(e)}\n\n_Dica: Verifique sua conexão ou se a chave da API do Groq é válida._"
-                })
+                st.session_state.mensagens.append(
+                    {
+                        "role": "assistant",
+                        "content": f"Erro na analise: {str(e)}\n\nDica: Verifique sua conexao ou a chave da API.",
+                    }
+                )
 
         st.rerun()
-
-    # Botão para limpar conversa
-    if len(st.session_state.mensagens) > 1:
-        if st.button("🗑️ Limpar conversa", key="limpar"):
-            limpar_historico(USER_ID)
-            st.session_state.mensagens = [{
-                "role": "assistant",
-                "content": "Olá! Sou a **MavAI**. Em que posso ajudar hoje? Posso analisar vendas, estoque ou clientes para você."
-            }]
-            st.rerun()

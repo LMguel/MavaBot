@@ -1,7 +1,19 @@
 
+/* Paleta base compartilhada entre menu lateral e chat */
+:root {
+    --mav-surface: #0b1220;
+    --mav-surface-soft: #131c2e;
+    --mav-surface-elevated: #1a253b;
+    --mav-border: #2a3650;
+    --mav-text: #e6edf8;
+    --mav-text-muted: #9ba9c2;
+}
+
 /* Estilo geral do corpo da página */
 body {
     overflow: hidden; /* Impede o scroll da página inteira */
+    background-color: var(--mav-surface);
+    color: var(--mav-text);
 }
 
 /* Container da sidebar principal */
@@ -10,6 +22,7 @@ body {
     flex-direction: column;
     height: 100vh;
     padding: 2rem 1rem;
+    background-color: var(--mav-surface);
 }
 
 /* Container da logo */
@@ -31,7 +44,21 @@ body {
     text-align: center;
     padding: 1rem 0;
     font-size: 0.75rem;
-    color: #808080; /* Cor mais suave para o rodapé */
+    color: var(--mav-text-muted); /* Cor mais suave para o rodapé */
+}
+
+/* Tipografia principal no tema escuro */
+h1, h2, h3, h4, h5, h6,
+p,
+span,
+label,
+li,
+div[data-testid="stCaptionContainer"] {
+    color: var(--mav-text) !important;
+}
+
+[data-testid="stCaptionContainer"] {
+    color: var(--mav-text-muted) !important;
 }
 
 /* Remove o padding do container principal para a página de chat */
@@ -49,70 +76,102 @@ body {
     padding: 0;
 }
 
-/* Remove o cabeçalho de chat customizado que causava a linha */
-.chat-header {
-    display: none;
-}
-
-/* Container do histórico de mensagens */
-.chat-container {
-    flex-grow: 1;
-    overflow-y: auto; /* Permite o scroll apenas no chat */
-    padding: 1.5rem;
-    background-color: #f7f7f8;
-}
-
-/* Estilo para cada balão de mensagem */
-.st-emotion-cache-1c7y2kd {
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    max-width: 75%;
-    width: fit-content;
-}
-
-/* Mensagem do usuário (direita) */
-[data-testid="stChatMessage"]:has([data-testid="stMarkdownContainer"] p) {
+/* Chat layout customizado */
+.mav-chat-row {
     display: flex;
-    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 0.8rem;
 }
 
-[data-testid="stChatMessage"]:has([data-testid="stMarkdownContainer"] p) .st-emotion-cache-1c7y2kd {
-    background-color: #dcf8c6; /* Verde claro */
-    color: #333;
-    border: 1px solid #cde8b5;
-}
-
-/* Mensagem da IA (esquerda) */
-[data-testid="stChatMessage"]:not(:has([data-testid="stMarkdownContainer"] p)) {
-    display: flex;
+.mav-chat-row.assistant {
     justify-content: flex-start;
 }
 
-[data-testid="stChatMessage"]:not(:has([data-testid="stMarkdownContainer"] p)) .st-emotion-cache-1c7y2kd {
-    background-color: #ffffff; /* Branco */
-    color: #333;
-    border: 1px solid #e0e0e0;
+.mav-chat-row.user {
+    justify-content: flex-end;
+}
+
+.mav-chat-bubble {
+    max-width: min(78%, 760px);
+    padding: 0.8rem 1rem;
+    border-radius: 16px;
+    line-height: 1.45;
+    font-size: 0.96rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--mav-border);
+    word-break: break-word;
+}
+
+.mav-chat-bubble.assistant {
+    background: var(--mav-surface-soft);
+    color: var(--mav-text);
+    border-color: var(--mav-border);
+    border-top-left-radius: 6px;
+}
+
+.mav-chat-bubble.user {
+    background: linear-gradient(135deg, #1f6feb 0%, #1a8db3 100%);
+    color: #ffffff;
+    border-color: #2d7ed7;
+    border-top-right-radius: 6px;
 }
 
 /* Expansor de SQL */
 .stExpander {
     border-radius: 8px;
-    border: 1px solid #e0e0e0 !important;
-    background-color: #fafafa;
+    border: 1px solid var(--mav-border) !important;
+    background-color: var(--mav-surface-soft);
 }
 
 .stExpander header {
     font-size: 0.875rem;
-    color: #333;
+    color: var(--mav-text);
 }
 
 /* Rodapé fixo para o input de texto */
-.st-emotion-cache-1bs3l73 {
+div[data-testid="stChatInput"] {
     position: fixed;
     bottom: 0;
-    width: 100%;
-    background-color: #f7f7f8;
-    padding: 1rem 2rem 1.5rem 2rem;
-    border-top: 1px solid #dadee3;
+    left: 0;
+    right: 0;
+    width: auto;
+    background: linear-gradient(180deg, rgba(11, 18, 32, 0) 0%, rgba(11, 18, 32, 1) 35%);
+    padding: 0.9rem 2rem 1.2rem 2rem;
+    border-top: 1px solid var(--mav-border);
+}
+
+div[data-testid="stChatInput"] textarea {
+    background-color: var(--mav-surface-soft) !important;
+    color: var(--mav-text) !important;
+    border: 1px solid var(--mav-border) !important;
+}
+
+div[data-testid="stChatInput"] textarea::placeholder {
+    color: var(--mav-text-muted) !important;
+}
+
+div[data-testid="stChatInput"] button {
+    background-color: var(--mav-surface-elevated) !important;
+    border: 1px solid var(--mav-border) !important;
+}
+
+/* Fundo da área principal igual ao menu lateral */
+[data-testid="stAppViewContainer"] {
+    background-color: var(--mav-surface);
+}
+
+/* Espaço para o input fixo não cobrir últimas mensagens */
+[data-testid="stAppViewContainer"] [data-testid="stVerticalBlock"]:last-child {
+    padding-bottom: 6.2rem;
+}
+
+@media (max-width: 900px) {
+    .mav-chat-bubble {
+        max-width: 92%;
+        font-size: 0.93rem;
+    }
+
+    div[data-testid="stChatInput"] {
+        padding: 0.8rem 0.9rem 1rem 0.9rem;
+    }
 }

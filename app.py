@@ -30,7 +30,7 @@ os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API", "")
 def iniciar_oraculo():
     return criar_recursos()   # usa DB_URL e GROQ_API do .env
 
-db, chain, llm_conversa = iniciar_oraculo()
+db, chain, llm_conversa, llm_intent = iniciar_oraculo()
 
 
 # --- Sidebar + Navegação ---
@@ -38,7 +38,7 @@ with st.sidebar:
     st.image("image/image.png", width=160)
 
     def render_ia():
-        ia.render(db, chain, llm_conversa)
+        ia.render(db, chain, llm_conversa, llm_intent)
 
     def render_painel():
         painel.render(db)

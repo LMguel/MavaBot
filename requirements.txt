@@ -1,0 +1,21 @@
+# MavAI Project Requirements
+# Core Web Framework
+fastapi
+uvicorn
+
+# Interface
+streamlit
+pandas
+plotly
+
+# AI & LLM (LangChain/LangGraph)
+langchain-core
+langchain-community
+langchain-groq
+langgraph
+sqlalchemy
+
+# Utilities
+python-dotenv
+httpx
+pydantic

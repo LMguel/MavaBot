@@ -76,13 +76,13 @@ Cria e popula `winthor_fake.db` com tabelas:
 Inclui dados fictícios de clientes, pedidos, itens e preço por região.
 
 ### 7) Integração WhatsApp
-Arquivos: `whatsapp/server.py`, `whatsapp/meta_client.py`, `whatsapp/config.py`.
+Arquivos: `whatsapp/server.py`, `whatsapp/evolution_client.py`, `whatsapp/config.py`.
 
 Fluxo:
-1. Meta chama `GET /webhook` para verificação (token).
-2. Meta envia mensagens para `POST /webhook`.
+1. Serviço usa `GET /webhook` para verificação (token).
+2. Meta WhatsApp Cloud API envia mensagens para `POST /webhook`.
 3. Serviço lê a mensagem, evita duplicidade por ID e chama `responder`.
-4. Resposta é enviada ao usuário via WhatsApp Cloud API.
+4. Resposta é enviada ao usuário via WhatsApp Cloud API (Graph API).
 
 ## Estrutura do projeto
 
@@ -101,7 +101,7 @@ MavAI/
 │  └─ estoque.py
 └─ whatsapp/
    ├─ config.py
-   ├─ meta_client.py
+  ├─ evolution_client.py
    └─ server.py
 ```
 
@@ -109,7 +109,7 @@ MavAI/
 
 - Python 3.10+
 - Chave de API da Groq
-- (Opcional) Conta Meta/WhatsApp Cloud API para webhook
+- Conta Meta com WhatsApp Cloud API habilitada
 
 ## Instalação
 
@@ -125,7 +125,7 @@ python -m venv .venv
 ### 2) Instalar dependências
 
 ```powershell
-pip install streamlit python-dotenv pandas plotly fastapi uvicorn requests langchain-community langchain-core langchain-groq langgraph
+pip install streamlit python-dotenv pandas plotly fastapi uvicorn httpx langchain-community langchain-core langchain-groq langgraph
 ```
 
 ### 3) Configurar variáveis de ambiente
@@ -144,11 +144,11 @@ GROQ_API_KEY=seu_token_groq
 GROQ_MODEL=llama-3.3-70b-versatile
 DEBUG_SQL=0
 
-# WhatsApp Cloud API (somente se usar webhook)
+# WhatsApp Cloud API (Meta)
 WHATSAPP_VERIFY_TOKEN=seu_verify_token
-WHATSAPP_ACCESS_TOKEN=seu_access_token
+WHATSAPP_ACCESS_TOKEN=seu_access_token_meta
 WHATSAPP_PHONE_NUMBER_ID=seu_phone_number_id
-WHATSAPP_GRAPH_API_VERSION=v19.0
+WHATSAPP_API_VERSION=v21.0
 MAX_REPLY_CHARS=1200
 ```
 
