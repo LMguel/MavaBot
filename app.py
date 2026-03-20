@@ -2,6 +2,10 @@
 import os
 import streamlit as st
 from dotenv import load_dotenv
+
+# Carrega variáveis de ambiente antes de importar módulos que leem DB_URL/GROQ.
+load_dotenv()
+
 from mavai_core import criar_recursos
 from modules import ia, painel, estoque
 
@@ -22,7 +26,6 @@ st.set_page_config(
 load_css("style.css")
 
 # --- Variáveis de ambiente ---
-load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API", "")
 
 # --- Recursos cacheados (LLM + DB instanciados 1x) ---

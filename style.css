@@ -1,18 +1,18 @@
 
 /* Paleta base compartilhada entre menu lateral e chat */
 :root {
-    --mav-surface: #0b1220;
-    --mav-surface-soft: #131c2e;
-    --mav-surface-elevated: #1a253b;
-    --mav-border: #2a3650;
-    --mav-text: #e6edf8;
-    --mav-text-muted: #9ba9c2;
+    --mav-surface: #0f2744;
+    --mav-surface-soft: #16365c;
+    --mav-surface-elevated: #1e4675;
+    --mav-border: #2e5f94;
+    --mav-text: #e9f1fb;
+    --mav-text-muted: #b9cbe2;
 }
 
 /* Estilo geral do corpo da página */
 body {
     overflow: hidden; /* Impede o scroll da página inteira */
-    background-color: var(--mav-surface);
+    background: linear-gradient(180deg, #0d2340 0%, #143660 45%, #0d2340 100%);
     color: var(--mav-text);
 }
 
@@ -97,7 +97,7 @@ div[data-testid="stCaptionContainer"] {
     border-radius: 16px;
     line-height: 1.45;
     font-size: 0.96rem;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 10px 24px rgba(7, 19, 36, 0.35);
     border: 1px solid var(--mav-border);
     word-break: break-word;
 }
@@ -110,9 +110,9 @@ div[data-testid="stCaptionContainer"] {
 }
 
 .mav-chat-bubble.user {
-    background: linear-gradient(135deg, #1f6feb 0%, #1a8db3 100%);
+    background: linear-gradient(135deg, #2c5f96 0%, #3f7fca 100%);
     color: #ffffff;
-    border-color: #2d7ed7;
+    border-color: #5d8fc2;
     border-top-right-radius: 6px;
 }
 
@@ -130,20 +130,23 @@ div[data-testid="stCaptionContainer"] {
 
 /* Rodapé fixo para o input de texto */
 div[data-testid="stChatInput"] {
-    position: fixed;
+    position: sticky;
     bottom: 0;
-    left: 0;
-    right: 0;
-    width: auto;
-    background: linear-gradient(180deg, rgba(11, 18, 32, 0) 0%, rgba(11, 18, 32, 1) 35%);
-    padding: 0.9rem 2rem 1.2rem 2rem;
-    border-top: 1px solid var(--mav-border);
+    left: auto;
+    right: auto;
+    width: 100%;
+    background: var(--mav-surface);
+    padding: 0.65rem 0 0.75rem 0;
+    border-top: 1px solid rgba(46, 95, 148, 0.9);
+    backdrop-filter: blur(6px);
+    z-index: 20;
 }
 
 div[data-testid="stChatInput"] textarea {
     background-color: var(--mav-surface-soft) !important;
     color: var(--mav-text) !important;
     border: 1px solid var(--mav-border) !important;
+    border-radius: 12px !important;
 }
 
 div[data-testid="stChatInput"] textarea::placeholder {
@@ -157,12 +160,7 @@ div[data-testid="stChatInput"] button {
 
 /* Fundo da área principal igual ao menu lateral */
 [data-testid="stAppViewContainer"] {
-    background-color: var(--mav-surface);
-}
-
-/* Espaço para o input fixo não cobrir últimas mensagens */
-[data-testid="stAppViewContainer"] [data-testid="stVerticalBlock"]:last-child {
-    padding-bottom: 6.2rem;
+    background: linear-gradient(180deg, #0d2340 0%, #143660 45%, #0d2340 100%);
 }
 
 @media (max-width: 900px) {
